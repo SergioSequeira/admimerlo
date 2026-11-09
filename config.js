@@ -5,6 +5,6 @@
 // Esta clave es pública por diseño: solo permite leer; escribir exige iniciar sesión en el panel.
 // Mientras url esté vacío, la web muestra los datos fijos de respaldo.
 window.ADMI = {
-  url: "",
+  url: "https://dtoccdasexzqifjskapu.supabase.co",
   key: ""
 };
