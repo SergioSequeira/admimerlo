@@ -6,5 +6,5 @@
 // Mientras url esté vacío, la web muestra los datos fijos de respaldo.
 window.ADMI = {
   url: "https://dtoccdasexzqifjskapu.supabase.co",
-  key: ""
+  key: "sb_publishable_rvsxO5_ZnH7fmH5ANhRjBQ_yX6nd47D"
 };
