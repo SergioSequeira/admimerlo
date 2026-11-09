@@ -1,9 +1,11 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Administración Merlo</title>
+<meta name="description" content="Departamentos y casas en alquiler en el centro de Merlo, cerca de la estación. Administración Merlo.">
+<link rel="icon" href="logo.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap">
 <style>
-/* Layout: sticky logo bar, filter tabs, two-column card grid; each card has a gallery and one WhatsApp action. Palette taken from the logo: navy, sky, graphite. */
+/* Layout: sticky logo bar, two-column card grid; each card has a gallery, price, conditions and one WhatsApp action. Palette taken from the logo: navy, sky, graphite. */
 :root{
   --bg:#f3f7fb; --surface:#ffffff; --fg:#14202e; --muted:#5b6b7c; --line:#d9e3ee;
   --navy:#0b4a8f; --sky:#1e9bd7; --graphite:#46484d; --wa:#128c4a; --wa-fg:#ffffff;
@@ -27,14 +29,12 @@ header{display:flex;align-items:center;gap:16px;padding:14px 0;flex-wrap:wrap}
 .brand p{margin:4px 0 0;color:var(--muted)}
 .cta{display:inline-flex;align-items:center;gap:8px;background:var(--wa);color:var(--wa-fg);font-weight:600;text-decoration:none;padding:11px 18px;border-radius:999px;border:0;cursor:pointer;font-family:var(--body);font-size:1rem}
 .cta:hover{filter:brightness(1.06)}
+.ghost{display:inline-flex;align-items:center;gap:6px;color:var(--navy);font-weight:600;text-decoration:none;border:1px solid var(--line);padding:8px 14px;border-radius:999px;font-size:.95rem;background:var(--surface)}
 :focus-visible{outline:3px solid var(--sky);outline-offset:2px}
 .intro{padding:28px 0 8px;display:grid;gap:8px}
 .intro h2{font:700 clamp(1.7rem,5vw,2.8rem)/1.08 var(--display);margin:0;max-width:20ch;text-wrap:balance}
 .intro p{margin:0;max-width:60ch;color:var(--muted)}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;padding:18px 0 22px}
-.tab{font:600 .95rem var(--body);background:var(--surface);color:var(--fg);border:1px solid var(--line);padding:9px 16px;border-radius:999px;cursor:pointer}
-.tab[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--bg)}
-.zone{display:flex;align-items:baseline;gap:12px;margin:10px 0 14px;flex-wrap:wrap}
+.zone{display:flex;align-items:baseline;gap:12px;margin:26px 0 14px;flex-wrap:wrap}
 .zone h3{font:700 1.5rem var(--display);margin:0}
 .zone span{color:var(--muted);font-size:.95rem}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px;margin-bottom:34px}
@@ -47,15 +47,22 @@ header{display:flex;align-items:center;gap:16px;padding:14px 0;flex-wrap:wrap}
 .body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
 .tag{font:600 .75rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--navy)}
 .body h4{font:700 1.25rem/1.2 var(--display);margin:0}
-.body p{margin:0;color:var(--muted);font-size:.95rem}
-.body .cta{margin-top:auto;align-self:flex-start}
-.price{font-weight:600;color:var(--graphite)}
+.body p{margin:0;color:var(--muted);font-size:.95rem;white-space:pre-line}
+.price{font:700 1.15rem var(--display);color:var(--fg)}
+.price small{display:block;font:500 .85rem var(--body);color:var(--muted)}
+details{border-top:1px solid var(--line);padding-top:8px}
+summary{cursor:pointer;font-weight:600;color:var(--navy);font-size:.95rem}
+details p{margin-top:6px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.cond{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:34px}
+.cond h3{font:700 1.3rem var(--display);margin:0 0 8px}
+.cond p{margin:0;color:var(--muted);white-space:pre-line}
+.empty{color:var(--muted);padding:20px 0}
 footer{border-top:1px solid var(--line);padding:24px 0 32px;color:var(--muted);display:grid;gap:6px;font-size:.95rem}
 footer a{color:var(--navy)}
 .num{font-variant-numeric:tabular-nums;color:var(--fg);font-weight:600}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
-
 </head><body>
 <div class="wrap">
   <header>
@@ -64,46 +71,98 @@ footer a{color:var(--navy)}
       <h1>Administración Merlo</h1>
       <p>Alquileres en Merlo</p>
     </div>
-    <a class="cta" href="https://wa.me/5491160151357" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+    <a class="cta" id="cta-top" href="https://wa.me/5491160151357" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
   </header>
 
   <section class="intro">
-    <h2>Departamentos y casas para alquilar</h2>
-    <p>Mirá las fotos y consultá disponibilidad y costos por WhatsApp. Te pasamos también videos de cada propiedad.</p>
+    <h2 id="intro-titulo">Departamentos y casas para alquilar</h2>
+    <p id="intro-texto">Mirá las fotos y consultá disponibilidad y costos por WhatsApp. Te pasamos también videos de cada propiedad.</p>
   </section>
 
-  <section id="s-merlo" data-z="merlo" style="margin-top:22px">
+  <section>
     <div class="zone"><h3>Merlo</h3><span>Centro, cerca de la estación de trenes</span></div>
-    <div class="grid" id="g-merlo"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="cond" id="cond" hidden>
+    <h3>Condiciones de alquiler</h3>
+    <p id="cond-texto"></p>
   </section>
 
   <footer>
-    <div>WhatsApp: <span class="num">11 6015 1357</span></div>
+    <div>WhatsApp: <span class="num" id="num">11 6015 1357</span></div>
     <div>Administración Merlo · Merlo, Buenos Aires</div>
   </footer>
 </div>
 
+<script src="config.js"></script>
 <script>
-var P=[
- {z:'merlo',id:'rosas',t:'Rosas 757',tag:'Merlo centro',d:'Edificio con balcones sobre la calle y entrada amplia con piso de porcelanato. Departamentos con cocina equipada y buena luz natural.',n:4},
- {z:'merlo',id:'avellaneda',t:'Avellaneda 600',tag:'Merlo centro',d:'Departamentos en un edificio con ingreso por pasillo y galería. Ambientes luminosos con ventilador de techo.',n:4},
- {z:'merlo',id:'chacabuco',t:'Chacabuco 400-500',tag:'Merlo centro',d:'Complejo de ladrillo a la vista con jardín al frente. Departamentos con pisos de madera y porcelanato, y balcón.',n:4},
- {z:'merlo',id:'mendoza',t:'Mendoza 630, chalet',tag:'Casa en Merlo',d:'Chalet de ladrillo con jardín, parrilla y galería. Cocina con mesada de granito y ambientes amplios con ventanas al verde.',n:4}
-];
-function wa(t){return 'https://wa.me/5491160151357?text='+encodeURIComponent('Hola, quiero consultar por el alquiler de '+t)}
-function src(p,i){return 'img/'+p.id+'-'+i+'.jpg'}
-P.forEach(function(p){
-  var idx=[0,1,2,3,4];
-  var card=document.createElement('article');card.className='card';
-  var th=idx.map(function(i,k){return '<button type="button" id="th-'+p.id+'-'+i+'" aria-label="Foto '+(k+1)+'" '+(k===0?'aria-current="true"':'')+' data-i="'+i+'"><img src="'+src(p,i)+'" alt="" loading="lazy"></button>'}).join('');
-  card.innerHTML='<img class="shot" id="sh-'+p.id+'" src="'+src(p,idx[0])+'" alt="'+p.t+'"><div class="thumbs">'+th+'</div><div class="body"><span class="tag">'+p.tag+'</span><h4>'+p.t+'</h4><p>'+p.d+'</p><p class="price">Precio: consultar</p><a class="cta" href="'+wa(p.t)+'" target="_blank" rel="noopener">Consultar por WhatsApp</a></div>';
-  card.querySelector('.thumbs').addEventListener('click',function(e){
-    var b=e.target.closest('button');if(!b)return;
-    card.querySelector('.shot').src=src(p,b.getAttribute('data-i'));
-    card.querySelectorAll('.thumbs button').forEach(function(x){x.removeAttribute('aria-current')});
-    b.setAttribute('aria-current','true');
+// Datos de respaldo: se usan si Supabase no está configurado o no responde.
+var FALLBACK={
+  config:{whatsapp:'5491160151357'},
+  props:[
+   {slug:'rosas',titulo:'Rosas 757',etiqueta:'Merlo centro',descripcion:'Edificio con balcones sobre la calle y entrada amplia con piso de porcelanato. Departamentos con cocina equipada y buena luz natural.',fotos:5},
+   {slug:'avellaneda',titulo:'Avellaneda 600',etiqueta:'Merlo centro',descripcion:'Departamentos en un edificio con ingreso por pasillo y galería. Ambientes luminosos con ventilador de techo.',fotos:5},
+   {slug:'chacabuco',titulo:'Chacabuco 400-500',etiqueta:'Merlo centro',descripcion:'Complejo de ladrillo a la vista con jardín al frente. Departamentos con pisos de madera y porcelanato, y balcón.',fotos:5},
+   {slug:'mendoza',titulo:'Mendoza 630, chalet',etiqueta:'Casa en Merlo',descripcion:'Chalet de ladrillo con jardín, parrilla y galería. Cocina con mesada de granito y ambientes amplios con ventanas al verde.',fotos:5}
+  ].map(function(p){p.fotos=[0,1,2,3,4].map(function(i){return 'img/'+p.slug+'-'+i+'.jpg'});p.disponible=true;return p})
+};
+var WA='5491160151357';
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function waLink(t){return 'https://wa.me/'+WA+'?text='+encodeURIComponent('Hola, quiero consultar por el alquiler de '+t)}
+function fmtNum(n){var d=n.replace(/\D/g,'');if(d.length===13&&d.slice(0,3)==='549')d=d.slice(3);return d.length===10?d.slice(0,2)+' '+d.slice(2,6)+' '+d.slice(6):n}
+
+function render(data){
+  var cfg=data.config||{};
+  if(cfg.whatsapp){WA=cfg.whatsapp.replace(/\D/g,'');document.getElementById('cta-top').href='https://wa.me/'+WA;document.getElementById('num').textContent=fmtNum(WA)}
+  if(cfg.intro_titulo)document.getElementById('intro-titulo').textContent=cfg.intro_titulo;
+  if(cfg.intro_texto)document.getElementById('intro-texto').textContent=cfg.intro_texto;
+  if(cfg.condiciones&&cfg.condiciones.trim()){document.getElementById('cond-texto').textContent=cfg.condiciones;document.getElementById('cond').hidden=false}
+  var grid=document.getElementById('grid');grid.innerHTML='';
+  var props=(data.props||[]).filter(function(p){return p.disponible!==false});
+  if(!props.length){grid.innerHTML='<p class="empty">Por el momento no hay unidades disponibles. Escribinos por WhatsApp y te avisamos.</p>';return}
+  props.forEach(function(p){
+    var fotos=p.fotos&&p.fotos.length?p.fotos:['logo.png'];
+    var card=document.createElement('article');card.className='card';
+    var th=fotos.map(function(u,k){return '<button type="button" aria-label="Foto '+(k+1)+'" '+(k===0?'aria-current="true"':'')+' data-u="'+esc(u)+'"><img src="'+esc(u)+'" alt="" loading="lazy"></button>'}).join('');
+    var precio=p.precio&&p.precio.trim()?esc(p.precio):'Consultar';
+    var h='<img class="shot" src="'+esc(fotos[0])+'" alt="'+esc(p.titulo)+'">';
+    if(fotos.length>1)h+='<div class="thumbs">'+th+'</div>';
+    h+='<div class="body"><span class="tag">'+esc(p.etiqueta||'Merlo')+(p.ambientes?' · '+esc(p.ambientes):'')+'</span><h4>'+esc(p.titulo)+'</h4><p>'+esc(p.descripcion)+'</p>';
+    h+='<div class="price">'+precio+(p.ajuste?'<small>'+esc(p.ajuste)+'</small>':'')+'</div>';
+    if(p.condiciones&&p.condiciones.trim())h+='<details><summary>Condiciones</summary><p>'+esc(p.condiciones)+'</p></details>';
+    h+='<div class="actions"><a class="cta" href="'+waLink(p.titulo)+'" target="_blank" rel="noopener">Consultar por WhatsApp</a>';
+    if(p.youtube)h+='<a class="ghost" href="'+esc(p.youtube)+'" target="_blank" rel="noopener">▶ Ver video</a>';
+    h+='</div></div>';
+    card.innerHTML=h;
+    var thumbs=card.querySelector('.thumbs');
+    if(thumbs)thumbs.addEventListener('click',function(e){
+      var b=e.target.closest('button');if(!b)return;
+      card.querySelector('.shot').src=b.getAttribute('data-u');
+      card.querySelectorAll('.thumbs button').forEach(function(x){x.removeAttribute('aria-current')});
+      b.setAttribute('aria-current','true');
+    });
+    grid.appendChild(card);
   });
-  document.getElementById('g-'+p.z).appendChild(card);
-});
+}
+
+function load(){
+  var c=window.ADMI||{};
+  if(!c.url||!c.key){render(FALLBACK);return}
+  var H={apikey:c.key,Authorization:'Bearer '+c.key};
+  var base=c.url.replace(/\/$/,'')+'/rest/v1/';
+  Promise.all([
+    fetch(base+'propiedades?select=*,fotos(url,orden)&order=orden.asc,titulo.asc',{headers:H}).then(function(r){if(!r.ok)throw 0;return r.json()}),
+    fetch(base+'config?select=clave,valor',{headers:H}).then(function(r){return r.ok?r.json():[]})
+  ]).then(function(res){
+    var cfg={};res[1].forEach(function(r){cfg[r.clave]=r.valor});
+    var props=res[0].map(function(p){
+      p.fotos=(p.fotos||[]).sort(function(a,b){return a.orden-b.orden}).map(function(f){return f.url});
+      return p;
+    });
+    render({config:cfg,props:props});
+  }).catch(function(){render(FALLBACK)});
+}
+load();
 </script>
 </body></html>
