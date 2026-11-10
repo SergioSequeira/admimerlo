@@ -271,6 +271,54 @@ $('cfgform').addEventListener('submit',function(e){e.preventDefault();
   var rows=KEYS.map(function(k){return {clave:k,valor:$('c_'+k).value.trim()}});
   var w=rows[0].valor.replace(/\D/g,'');if(w&&!/^549\d{10}$/.test(w))return toast('El WhatsApp debe ser 549 + código de área + número (13 dígitos)',true);rows[0].valor=w;
   sb.from('config').upsert(rows).then(function(r){if(r.error)return toast('No se guardó: '+r.error.message,true);toast('Textos guardados')})});
+// Recuperación de contraseña con la sesión emitida por Supabase.
+var recovery = document.createElement('dialog');
+recovery.className = 'card';
+recovery.innerHTML = '<form class="login" style="margin:0"><h2>Elegí tu contraseña</h2><label>Nueva contraseña<input type="password" autocomplete="new-password" minlength="12" required></label><button class="btn p">Guardar contraseña</button><p role="status"></p></form>';
+document.body.append(recovery);
+var recoveryForm = recovery.querySelector('form');
+var recoveryStatus = recovery.querySelector('[role=status]');
+recovery.addEventListener('cancel', function(e){e.preventDefault()});
+sb.auth.onAuthStateChange(function(event){
+  if(event==='PASSWORD_RECOVERY' && !recovery.open) recovery.showModal();
+});
+recoveryForm.addEventListener('submit', async function(e){
+  e.preventDefault();
+  var input = recoveryForm.querySelector('input');
+  var button = recoveryForm.querySelector('button');
+  button.disabled = true;
+  recoveryStatus.textContent = '';
+  try {
+    var result = await sb.auth.updateUser({password:input.value});
+    if(result.error) throw result.error;
+    recoveryForm.reset();
+    recovery.close();
+    toast('Contraseña guardada');
+  } catch(error) {
+    recoveryStatus.textContent = 'No se pudo guardar la contraseña: ' + error.message;
+  } finally {
+    button.disabled = false;
+  }
+});
+var resetButton = document.createElement('button');
+resetButton.type = 'button';
+resetButton.className = 'btn';
+resetButton.textContent = 'Crear o recuperar contraseña';
+$('login').append(resetButton);
+resetButton.addEventListener('click', async function(){
+  var email = $('email');
+  if(!email.value.trim() || !email.reportValidity()) {email.focus(); return;}
+  resetButton.disabled = true;
+  try {
+    var result = await sb.auth.resetPasswordForEmail(email.value.trim(), {redirectTo:location.origin + location.pathname});
+    if(result.error) throw result.error;
+    $('login-err').textContent = 'Si la cuenta existe, vas a recibir un correo para elegir tu contraseña.';
+  } catch(error) {
+    $('login-err').textContent = 'No se pudo enviar el correo. Probá de nuevo más tarde.';
+  } finally {
+    resetButton.disabled = false;
+  }
+});
 })();
 </script>
 </body></html>
