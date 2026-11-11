@@ -60,7 +60,9 @@ header{display:flex;align-items:center;gap:16px;padding:14px 0;flex-wrap:wrap}
 .tag{font:600 .75rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--navy)}
 .body h4{font:700 1.25rem/1.2 var(--display);margin:0}
 .body p{margin:0;color:var(--muted);font-size:.95rem;white-space:pre-line}
-.price{font:700 1.15rem var(--display);color:var(--fg)}
+.price{font:700 1.15rem var(--display);color:var(--fg);display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.price .plabel{font:600 .85rem var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.price small{flex-basis:100%}
 .price small{display:block;font:500 .85rem var(--body);color:var(--muted)}
 details{border-top:1px solid var(--line);padding-top:8px}
 summary{cursor:pointer;font-weight:600;color:var(--navy);font-size:.95rem}
@@ -197,6 +199,7 @@ function pic(u,cls,alt,lazy){
   return img;
 }
 function ytId(u){var m=String(u||'').match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([\w-]{11})/);return m?m[1]:null}
+function fmtPrecio(v){var t=String(v||'').trim();return /^\d+$/.test(t)?'$ '+t.replace(/\B(?=(\d{3})+(?!\d))/g,'.'):t}
 function fechaAR(d){var m=String(d||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+'/'+m[2]+'/'+m[1]:''}
 function mapQuery(p){var q=(p.mapa&&p.mapa.trim())||MAPA_POR_DEFECTO[p.slug]||String(p.titulo||'').split(',')[0];return /merlo/i.test(q)?q:q+MAPA_SUFIJO}
 function telLink(){return 'tel:'+TEL}
@@ -246,7 +249,7 @@ function render(data){
     var fotos=p.fotos&&p.fotos.length?p.fotos:['logo.png'];
     var card=document.createElement('article');card.className='card';
     var th=fotos.map(function(u,k){return '<button type="button" aria-label="Foto '+(k+1)+'" '+(k===0?'aria-current="true"':'')+' data-k="'+k+'">'+pic(u,'',''  ,true)+'</button>'}).join('');
-    var precio=p.precio&&p.precio.trim()?esc(p.precio):'Consultar';
+    var precio=p.precio&&p.precio.trim()?esc(fmtPrecio(p.precio)):'Consultar';
     var fecha=p.precio&&p.precio.trim()&&p.precio_fecha?'Precio vigente al '+fechaAR(p.precio_fecha):'';
     var h='<div class="media">'+pic(fotos[0],'shot',p.titulo,n>0);
     if(p.estado==='reservado')h+='<span class="badge">Reservado</span>';
@@ -256,7 +259,7 @@ function render(data){
     h+='<div class="body"><span class="tag">'+esc(p.etiqueta||'Merlo')+(p.ambientes?' · '+esc(p.ambientes):'')+'</span><h4>'+esc(p.titulo)+'</h4>';
     if(p.superficie||p.expensas)h+='<div class="specs">'+(p.superficie?'<span class="chip">'+esc(p.superficie)+'</span>':'')+(p.expensas?'<span class="chip">Expensas: '+esc(p.expensas)+'</span>':'')+'</div>';
     h+='<p>'+esc(p.descripcion)+'</p>';
-    h+='<div class="price">'+precio+((p.ajuste||fecha)?'<small>'+esc([p.ajuste,fecha].filter(Boolean).join(' · '))+'</small>':'')+'</div>';
+    h+='<div class="price"><span class="plabel">Precio del Alquiler</span><span>'+precio+'</span>'+((p.ajuste||fecha)?'<small>'+esc([p.ajuste,fecha].filter(Boolean).join(' · '))+'</small>':'')+'</div>';
     var yid=ytId(p.youtube);
     if(yid)h+='<button type="button" class="yt" data-id="'+yid+'" aria-label="Reproducir video de '+esc(p.titulo)+'"><img src="https://i.ytimg.com/vi/'+yid+'/hqdefault.jpg" alt="" loading="lazy"><span class="play">▶</span></button>';
     if(p.condiciones&&p.condiciones.trim())h+='<details><summary>Condiciones</summary><p>'+esc(p.condiciones)+'</p></details>';
