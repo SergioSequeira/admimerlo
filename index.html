@@ -23,7 +23,7 @@
 html{-webkit-text-size-adjust:100%}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
 .wrap{max-width:1120px;margin:0 auto}
 header{display:flex;align-items:center;gap:16px;padding:14px 0;flex-wrap:wrap}
-.logo{width:76px;height:76px;object-fit:contain;background:#fff;border-radius:12px;padding:4px}
+.logo{width:96px;height:96px;object-fit:contain;background:#fff;border-radius:12px;padding:4px}
 .brand{min-width:0;flex:1 1 220px}
 .brand h1{font:800 clamp(1.5rem,4vw,2.1rem)/1.05 var(--display);margin:0;color:var(--navy);letter-spacing:-.01em;text-wrap:balance}
 .brand p{margin:4px 0 0;color:var(--muted)}
@@ -60,6 +60,8 @@ details p{margin-top:6px}
 .empty{color:var(--muted);padding:20px 0}
 footer{border-top:1px solid var(--line);padding:24px 0 32px;color:var(--muted);display:grid;gap:6px;font-size:.95rem}
 footer a{color:var(--navy)}
+.hermana{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
+.hermana img{height:44px;width:auto;background:#fff;border-radius:10px;padding:4px 8px;display:block}
 .num{font-variant-numeric:tabular-nums;color:var(--fg);font-weight:600}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -92,6 +94,7 @@ footer a{color:var(--navy)}
   <footer>
     <div>WhatsApp: <span class="num" id="num">11 6015 1357</span></div>
     <div>Administración Merlo · Merlo, Buenos Aires</div>
+    <div class="hermana"><span>¿Buscás en Mar del Plata?</span><a href="https://www.mardelfrentealmar.com.ar" target="_blank" rel="noopener"><img src="img/mardelfrentealmar-logo.png" alt="Mardel Frente al Mar" width="130" height="44"></a></div>
   </footer>
 </div>
 
