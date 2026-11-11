@@ -183,7 +183,8 @@ var FALLBACK={
 };
 var WA='5491160151357';
 var TEL='1150167802';
-var MAPA_POR_DEFECTO={chacabuco:'Chacabuco 455, Merlo, Buenos Aires, Argentina'};
+var MAPA_POR_DEFECTO={rosas:'Juan Manuel de Rosas 757',avellaneda:'Avellaneda 660',chacabuco:'Chacabuco 455',mendoza:'Mendoza 630'};
+var MAPA_SUFIJO=', Merlo, Partido de Merlo, Provincia de Buenos Aires, Argentina';
 // Preguntas frecuentes por defecto (datos ya publicados en las condiciones). Se pisan desde el panel > Textos generales.
 var FAQ_DEFAULT='¿Cómo coordino una visita?\nEscribinos por WhatsApp y coordinamos tu visita en el día.\n\n¿Qué incluyen las expensas?\nCubren impuestos, luz del consorcio y limpieza. No incluyen la luz de la unidad.\n\n¿Cómo se actualiza el alquiler?\nEl valor se actualiza cada trimestre según IPC.\n\n¿Cuánto es la seña?\nLa seña mínima es de $200.000 y se descuenta del total.\n\n¿Dónde quedan las propiedades?\nEn el centro de Merlo, cerca de la estación y de la municipalidad. Los departamentos tienen parque para tu mascota.';
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -197,7 +198,7 @@ function pic(u,cls,alt,lazy){
 }
 function ytId(u){var m=String(u||'').match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([\w-]{11})/);return m?m[1]:null}
 function fechaAR(d){var m=String(d||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+'/'+m[2]+'/'+m[1]:''}
-function mapQuery(p){return (p.mapa&&p.mapa.trim())||MAPA_POR_DEFECTO[p.slug]||(p.titulo+', Merlo, Buenos Aires, Argentina')}
+function mapQuery(p){var q=(p.mapa&&p.mapa.trim())||MAPA_POR_DEFECTO[p.slug]||String(p.titulo||'').split(',')[0];return /merlo/i.test(q)?q:q+MAPA_SUFIJO}
 function telLink(){return 'tel:'+TEL}
 function fmtTel(t){var d=String(t).replace(/\D/g,'');return d.length===10?d.slice(0,2)+' '+d.slice(2,6)+' '+d.slice(6):t}
 
