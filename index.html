@@ -72,6 +72,7 @@ details p{margin-top:6px}
 .empty{color:var(--muted);padding:20px 0}
 footer{border-top:1px solid var(--line);padding:24px 0 32px;color:var(--muted);display:grid;gap:6px;font-size:.95rem}
 footer a{color:var(--navy)}
+.topbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .hermana{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
 .hermana img{height:44px;width:auto;background:#fff;border-radius:10px;padding:4px 8px;display:block}
 .num{font-variant-numeric:tabular-nums;color:var(--fg);font-weight:600}
@@ -120,7 +121,7 @@ body{padding-bottom:84px}
       <h1>Administración Merlo</h1>
       <p>Alquileres en Merlo</p>
     </div>
-    <a class="cta" id="cta-top" href="https://wa.me/5491160151357" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+    <span class="topbtns"><a class="cta" id="cta-top" href="https://wa.me/5491160151357" target="_blank" rel="noopener">Escribinos por WhatsApp</a><a class="ghost" id="call-top" href="tel:1150167802">📞 Llamanos</a></span>
   </header>
 
   <section class="intro">
@@ -147,6 +148,7 @@ body{padding-bottom:84px}
 
   <footer>
     <div>WhatsApp: <span class="num" id="num">11 6015 1357</span></div>
+    <div>Teléfono: <a class="num" id="tel" href="tel:1150167802">11 5016 7802</a></div>
     <div>Administración Merlo · Merlo, Buenos Aires</div>
     <div class="hermana"><span>¿Buscás en Mar del Plata?</span><a href="https://www.mardelfrentealmar.com.ar" target="_blank" rel="noopener"><img src="img/mardelfrentealmar-logo.png" alt="Mardel Frente al Mar" width="130" height="44"></a></div>
   </footer>
@@ -180,6 +182,8 @@ var FALLBACK={
   ].map(function(p){p.fotos=[0,1,2,3,4].map(function(i){return 'img/'+p.slug+'-'+i+'.jpg'});p.disponible=true;return p})
 };
 var WA='5491160151357';
+var TEL='1150167802';
+var MAPA_POR_DEFECTO={chacabuco:'Chacabuco 455, Merlo, Buenos Aires, Argentina'};
 // Preguntas frecuentes por defecto (datos ya publicados en las condiciones). Se pisan desde el panel > Textos generales.
 var FAQ_DEFAULT='¿Cómo coordino una visita?\nEscribinos por WhatsApp y coordinamos tu visita en el día.\n\n¿Qué incluyen las expensas?\nCubren impuestos, luz del consorcio y limpieza. No incluyen la luz de la unidad.\n\n¿Cómo se actualiza el alquiler?\nEl valor se actualiza cada trimestre según IPC.\n\n¿Cuánto es la seña?\nLa seña mínima es de $200.000 y se descuenta del total.\n\n¿Dónde quedan las propiedades?\nEn el centro de Merlo, cerca de la estación y de la municipalidad. Los departamentos tienen parque para tu mascota.';
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -193,7 +197,9 @@ function pic(u,cls,alt,lazy){
 }
 function ytId(u){var m=String(u||'').match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([\w-]{11})/);return m?m[1]:null}
 function fechaAR(d){var m=String(d||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+'/'+m[2]+'/'+m[1]:''}
-function mapQuery(p){return (p.mapa&&p.mapa.trim())||(p.titulo+', Merlo, Buenos Aires, Argentina')}
+function mapQuery(p){return (p.mapa&&p.mapa.trim())||MAPA_POR_DEFECTO[p.slug]||(p.titulo+', Merlo, Buenos Aires, Argentina')}
+function telLink(){return 'tel:'+TEL}
+function fmtTel(t){var d=String(t).replace(/\D/g,'');return d.length===10?d.slice(0,2)+' '+d.slice(2,6)+' '+d.slice(6):t}
 
 // ----- visor de fotos a pantalla completa -----
 var LB={f:[],i:0,t:''};
@@ -224,6 +230,8 @@ function renderFaq(cfg){
 function render(data){
   var cfg=data.config||{};
   if(cfg.whatsapp){WA=cfg.whatsapp.replace(/\D/g,'');document.getElementById('cta-top').href='https://wa.me/'+WA;document.getElementById('num').textContent=fmtNum(WA)}
+  if(cfg.telefono&&cfg.telefono.replace(/\D/g,'').length>=8)TEL=cfg.telefono.replace(/\D/g,'');
+  document.getElementById('call-top').href=telLink();document.getElementById('tel').href=telLink();document.getElementById('tel').textContent=fmtTel(TEL);
   document.getElementById('fab').href='https://wa.me/'+WA+'?text='+encodeURIComponent('Hola, quiero consultar por un alquiler en Merlo');
   if(cfg.intro_titulo)document.getElementById('intro-titulo').textContent=cfg.intro_titulo;
   if(cfg.intro_texto)document.getElementById('intro-texto').textContent=cfg.intro_texto;
@@ -254,6 +262,7 @@ function render(data){
     h+='<details class="ub"><summary>Ubicación</summary><div class="ubc"></div></details>';
     h+='<div class="actions"><a class="cta" href="'+waLink(p.titulo)+'" target="_blank" rel="noopener">Consultar por WhatsApp</a>';
     if(p.youtube&&!yid)h+='<a class="ghost" href="'+esc(p.youtube)+'" target="_blank" rel="noopener">▶ Ver video</a>';
+    h+='<a class="ghost" href="'+telLink()+'">📞 Llamar</a>';
     h+='</div></div>';
     card.innerHTML=h;
     var cur=0;
