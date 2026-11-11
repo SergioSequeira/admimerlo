@@ -180,6 +180,8 @@ var FALLBACK={
   ].map(function(p){p.fotos=[0,1,2,3,4].map(function(i){return 'img/'+p.slug+'-'+i+'.jpg'});p.disponible=true;return p})
 };
 var WA='5491160151357';
+// Preguntas frecuentes por defecto (datos ya publicados en las condiciones). Se pisan desde el panel > Textos generales.
+var FAQ_DEFAULT='¿Cómo coordino una visita?\nEscribinos por WhatsApp y coordinamos tu visita en el día.\n\n¿Qué incluyen las expensas?\nCubren impuestos, luz del consorcio y limpieza. No incluyen la luz de la unidad.\n\n¿Cómo se actualiza el alquiler?\nEl valor se actualiza cada trimestre según IPC.\n\n¿Cuánto es la seña?\nLa seña mínima es de $200.000 y se descuenta del total.\n\n¿Dónde quedan las propiedades?\nEn el centro de Merlo, cerca de la estación y de la municipalidad. Los departamentos tienen parque para tu mascota.';
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function waLink(t){return 'https://wa.me/'+WA+'?text='+encodeURIComponent('Hola, quiero consultar por el alquiler de '+t)}
 function fmtNum(n){var d=n.replace(/\D/g,'');if(d.length===13&&d.slice(0,3)==='549')d=d.slice(3);return d.length===10?d.slice(0,2)+' '+d.slice(2,6)+' '+d.slice(6):n}
@@ -226,6 +228,7 @@ function render(data){
   if(cfg.intro_titulo)document.getElementById('intro-titulo').textContent=cfg.intro_titulo;
   if(cfg.intro_texto)document.getElementById('intro-texto').textContent=cfg.intro_texto;
   if(cfg.condiciones&&cfg.condiciones.trim()){document.getElementById('cond-texto').textContent=cfg.condiciones;document.getElementById('cond').hidden=false}
+  if(!cfg.faq)cfg.faq=FAQ_DEFAULT;
   renderFaq(cfg);
   var grid=document.getElementById('grid');grid.innerHTML='';
   var props=(data.props||[]).filter(function(p){return p.disponible!==false});
