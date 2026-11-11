@@ -114,6 +114,17 @@ code{background:var(--tint);padding:1px 5px;border-radius:4px}
             <label>Ambientes<input type="text" id="ambientes" placeholder="Ej: 2 ambientes, 45 m²"></label>
             <label>Video de YouTube<input type="url" id="youtube" placeholder="https://youtu.be/..."></label>
           </div>
+          <div id="extra">
+            <div class="row">
+              <label>Superficie<input type="text" id="superficie" placeholder="Ej: 45 m²"></label>
+              <label>Expensas<input type="text" id="expensas" placeholder="Ej: $ 60.000 aprox."></label>
+            </div>
+            <div class="row">
+              <label>Estado<select id="estado"><option value="disponible">Disponible</option><option value="reservado">Reservado (se ve con cartel)</option></select></label>
+              <label>Ubicación para el mapa <span class="hint">(vacío = usa el título + Merlo)</span><input type="text" id="mapa" placeholder="Ej: Rosas 757, Merlo, Buenos Aires"></label>
+            </div>
+          </div>
+          <div id="noextra" class="hint" style="color:var(--muted);background:var(--tint);border-radius:10px;padding:10px" hidden>Para cargar superficie, expensas, estado y mapa hay que correr una vez <code>migracion-2-mejoras.sql</code> en el SQL Editor de Supabase.</div>
           <label>Descripción<textarea id="descripcion" placeholder="Qué tiene el departamento, estado, luz, piso, etc."></textarea></label>
           <div class="row">
             <label>Precio <span class="hint">(vacío = "Consultar")</span><input type="text" id="precio" placeholder="Ej: $ 450.000 por mes"></label>
@@ -133,7 +144,7 @@ code{background:var(--tint);padding:1px 5px;border-radius:4px}
           <div class="fotos" id="fotos"></div>
           <label class="drop" id="drop">
             <input type="file" id="file" accept="image/*" multiple>
-            <div><strong>Agregar fotos</strong> — tocá acá o arrastrá las imágenes.<br><span class="hint">Se achican solas a 1600 px antes de subir. La primera es la portada.</span></div>
+            <div><strong>Agregar fotos</strong> — tocá acá o arrastrá las imágenes.<br><span class="hint">Se achican solas (1400 px, formato liviano) antes de subir. La primera es la portada.</span></div>
           </label>
           <div id="up" class="hint" style="color:var(--muted);margin-top:6px"></div>
         </div>
@@ -145,6 +156,8 @@ code{background:var(--tint);padding:1px 5px;border-radius:4px}
           <label>WhatsApp (solo números, con 549)<input type="text" id="c_whatsapp" placeholder="5491160151357"></label>
           <label>Título de portada<input type="text" id="c_intro_titulo"></label>
           <label>Texto de portada<textarea id="c_intro_texto"></textarea></label>
+          <label>Preguntas frecuentes <span class="hint">(una pregunta por bloque: la pregunta en la primera línea, la respuesta debajo, y una línea en blanco entre bloques)</span><textarea id="c_faq" style="min-height:200px"></textarea></label>
+          <label>Link a las reseñas de Google <span class="hint">(vacío = no se muestra el botón)</span><input type="url" id="c_resenas_url" placeholder="https://g.page/r/..."></label>
           <label>Condiciones generales de alquiler <span class="hint">(aparece como bloque al final de la web; dejar vacío para no mostrar)</span><textarea id="c_condiciones" style="min-height:160px" placeholder="Plazo, depósito, garantías aceptadas, expensas y servicios, requisitos..."></textarea></label>
           <div class="actions"><button class="btn ok" type="submit">Guardar textos</button></div>
         </form>
@@ -166,7 +179,8 @@ function toast(m,err){var t=$('toast');t.textContent=m;t.className='toast show'+
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 if(!C.url||!C.key){$('noconfig').hidden=false;return}
 var sb=window.supabase.createClient(C.url,C.key);
-var props=[],cur=null,fotos=[];
+var props=[],cur=null,fotos=[],EXTRA=false;
+var BASE=['titulo','etiqueta','ambientes','youtube','descripcion','precio','ajuste','condiciones'],XF=['superficie','expensas','mapa'];
 
 // ---------- sesión ----------
 sb.auth.getSession().then(function(r){show(!!(r.data&&r.data.session))});
@@ -187,6 +201,7 @@ function tab(w){var p=w==='props';$('tab-props').setAttribute('aria-pressed',p);
 function loadProps(){
   sb.from('propiedades').select('*,fotos(id,url,orden)').order('orden').order('titulo').then(function(r){
     if(r.error)return toast('Error leyendo propiedades: '+r.error.message,true);
+    EXTRA=!!(r.data.length&&('estado' in r.data[0]));$('extra').hidden=!EXTRA;$('noextra').hidden=EXTRA;
     props=r.data.map(function(p){p.fotos=(p.fotos||[]).sort(function(a,b){return a.orden-b.orden});return p});
     renderList();
     if(cur){var again=props.filter(function(p){return p.id===cur.id})[0];if(again)open(again)}
@@ -203,13 +218,17 @@ function renderList(){
 function move(i,dir){var j=i+dir;if(j<0||j>=props.length)return;var a=props[i];props[i]=props[j];props[j]=a;
   Promise.all(props.map(function(p,k){return sb.from('propiedades').update({orden:k+1}).eq('id',p.id)})).then(function(){toast('Orden guardado');loadProps()})}
 function open(p){cur=p;fotos=p.fotos;$('pick').hidden=true;$('editor').hidden=false;$('fotos-sec').hidden=false;$('del').hidden=false;
-  ['titulo','etiqueta','ambientes','youtube','descripcion','precio','ajuste','condiciones'].forEach(function(k){$(k).value=p[k]||''});
+  BASE.concat(XF).forEach(function(k){$(k).value=p[k]||''});$('estado').value=p.estado||'disponible';
   $('disponible').checked=p.disponible!==false;renderList();renderFotos();if(window.innerWidth<820)$('editor').scrollIntoView({behavior:'smooth'})}
-$('new').addEventListener('click',function(){cur={id:null,fotos:[]};fotos=[];$('form').reset();$('disponible').checked=true;$('pick').hidden=true;$('editor').hidden=false;$('fotos-sec').hidden=true;$('del').hidden=true;renderList();$('titulo').focus()});
+$('new').addEventListener('click',function(){cur={id:null,fotos:[]};fotos=[];$('form').reset();$('estado').value='disponible';$('disponible').checked=true;$('pick').hidden=true;$('editor').hidden=false;$('fotos-sec').hidden=true;$('del').hidden=true;renderList();$('titulo').focus()});
 function slugify(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'prop'}
 $('form').addEventListener('submit',function(e){e.preventDefault();
-  var row={};['titulo','etiqueta','ambientes','youtube','descripcion','precio','ajuste','condiciones'].forEach(function(k){row[k]=$(k).value.trim()||null});
-  row.disponible=$('disponible').checked;$('save').disabled=true;
+  var row={};BASE.forEach(function(k){row[k]=$(k).value.trim()||null});
+  row.disponible=$('disponible').checked;
+  if(EXTRA){XF.forEach(function(k){row[k]=$(k).value.trim()||null});row.estado=$('estado').value;
+    // la fecha del precio se actualiza solo cuando cambia el precio o el ajuste
+    var antes=cur.id?cur:{};if(row.precio&&(!cur.id||row.precio!==(antes.precio||null)||row.ajuste!==(antes.ajuste||null)||!antes.precio_fecha)){var t=new Date();row.precio_fecha=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0')}
+    if(!row.precio)row.precio_fecha=null}$('save').disabled=true;
   var q;
   if(cur.id){q=sb.from('propiedades').update(row).eq('id',cur.id).select().single()}
   else{row.slug=slugify(row.titulo)+'-'+Date.now().toString(36);row.orden=props.length+1;q=sb.from('propiedades').insert(row).select().single()}
@@ -243,17 +262,17 @@ function delFoto(i){var f=fotos[i];if(!confirm('¿Borrar esta foto?'))return;
 
 // achicar en el navegador antes de subir (máx 1600 px, JPEG 82%)
 function shrink(file){return new Promise(function(res,rej){var img=new Image();var u=URL.createObjectURL(file);
-  img.onload=function(){URL.revokeObjectURL(u);var M=1600,w=img.naturalWidth,h=img.naturalHeight,s=Math.min(1,M/Math.max(w,h));
+  img.onload=function(){URL.revokeObjectURL(u);var M=1400,w=img.naturalWidth,h=img.naturalHeight,s=Math.min(1,M/Math.max(w,h));
     var c=document.createElement('canvas');c.width=Math.round(w*s);c.height=Math.round(h*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-    c.toBlob(function(b){b?res(b):rej(new Error('No se pudo procesar la imagen'))},'image/jpeg',.82)};
+    c.toBlob(function(b){if(b&&b.type==='image/webp')return res(b);c.toBlob(function(j){j?res(j):rej(new Error('No se pudo procesar la imagen'))},'image/jpeg',.82)},'image/webp',.8)};
   img.onerror=function(){URL.revokeObjectURL(u);rej(new Error('Archivo de imagen inválido: '+file.name))};img.src=u})}
 function upload(files){if(!cur||!cur.id)return toast('Primero guardá la propiedad',true);
   var list=Array.prototype.slice.call(files).filter(function(f){return /^image\//.test(f.type)});if(!list.length)return;
   var done=0,fail=0;$('up').textContent='Subiendo 0/'+list.length+'…';
   var next=fotos.length;
   (function one(k){if(k>=list.length){$('up').textContent='';toast(fail?('Subidas '+done+', fallaron '+fail):('Listo: '+done+' foto'+(done===1?'':'s')+' agregada'+(done===1?'':'s')),!!fail);loadProps();return}
-    shrink(list[k]).then(function(blob){var path=cur.slug+'/'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7)+'.jpg';
-      return sb.storage.from('fotos').upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000'}).then(function(r){if(r.error)throw r.error;
+    shrink(list[k]).then(function(blob){var ext=blob.type==='image/webp'?'webp':'jpg';var path=cur.slug+'/'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7)+'.'+ext;
+      return sb.storage.from('fotos').upload(path,blob,{contentType:blob.type,cacheControl:'31536000'}).then(function(r){if(r.error)throw r.error;
         var url=sb.storage.from('fotos').getPublicUrl(path).data.publicUrl;
         return sb.from('fotos').insert({propiedad_id:cur.id,url:url,orden:next++})}).then(function(r){if(r.error)throw r.error;done++})
     }).catch(function(e){fail++;console.error(e);toast('Falló '+list[k].name+': '+(e.message||e),true)})
@@ -264,7 +283,7 @@ var dz=$('drop');['dragenter','dragover'].forEach(function(ev){dz.addEventListen
 dz.addEventListener('drop',function(e){upload(e.dataTransfer.files)});
 
 // ---------- textos generales ----------
-var KEYS=['whatsapp','intro_titulo','intro_texto','condiciones'];
+var KEYS=['whatsapp','intro_titulo','intro_texto','condiciones','faq','resenas_url'];
 function loadConfig(){sb.from('config').select('*').then(function(r){if(r.error)return toast(r.error.message,true);
   var m={};r.data.forEach(function(x){m[x.clave]=x.valor});KEYS.forEach(function(k){$('c_'+k).value=m[k]||''})})}
 $('cfgform').addEventListener('submit',function(e){e.preventDefault();

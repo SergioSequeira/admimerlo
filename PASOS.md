@@ -51,3 +51,7 @@ Listo. El panel queda en **https://admimerlo.com.ar/admin**.
 
 - 1 GB de almacenamiento de fotos (a ~300 KB por foto son más de 3.000 fotos).
 - El proyecto se **pausa si pasa 7 días sin uso**; las visitas a la web cuentan como uso, pero si la web queda sin visitas una semana hay que entrar al panel de Supabase y tocar "Restore". Mientras está pausado la web muestra los datos de respaldo fijos (las 4 propiedades originales, sin precios).
+
+## Mejoras de la ficha (paso extra, una sola vez)
+
+Correr `migracion-2-mejoras.sql` en Supabase > SQL Editor. Habilita en el panel: superficie, expensas, estado (Reservado), ubicación para el mapa y "precio vigente al...", y carga las preguntas frecuentes iniciales (editables en Textos generales). Hasta que se corra, la web funciona igual sin esos datos.

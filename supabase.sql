@@ -109,3 +109,5 @@ insert into public.config (clave, valor) values
  ('intro_texto',  'Mirá las fotos y consultá disponibilidad y costos por WhatsApp. Te pasamos también videos de cada propiedad.'),
  ('condiciones',  '')
 on conflict (clave) do nothing;
+
+-- Mejoras de la ficha y preguntas frecuentes: ver migracion-2-mejoras.sql (correrlo después de este archivo).

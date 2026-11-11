@@ -1,8 +1,20 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Administración Merlo</title>
-<meta name="description" content="Departamentos y casas en alquiler en el centro de Merlo, cerca de la estación. Administración Merlo.">
+<title>Alquiler de departamentos y casas en Merlo | Administración Merlo</title>
+<meta name="description" content="Departamentos y casas en alquiler en el centro de Merlo, a metros de la estación. Mirá fotos, precios y condiciones, y consultá por WhatsApp. Administración Merlo.">
+<link rel="canonical" href="https://admimerlo.com.ar/">
+<meta name="theme-color" content="#0b4a8f">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Administración Merlo">
+<meta property="og:url" content="https://admimerlo.com.ar/">
+<meta property="og:title" content="Alquiler de departamentos y casas en Merlo">
+<meta property="og:description" content="Fotos, precios y condiciones. Consultá disponibilidad por WhatsApp. Administración Merlo.">
+<meta property="og:image" content="https://admimerlo.com.ar/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="logo.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"RealEstateAgent","name":"Administración Merlo","url":"https://admimerlo.com.ar/","logo":"https://admimerlo.com.ar/logo.png","image":"https://admimerlo.com.ar/og.jpg","telephone":"+5491160151357","description":"Administración y alquiler de departamentos y casas en Merlo, Buenos Aires.","areaServed":{"@type":"City","name":"Merlo"},"address":{"@type":"PostalAddress","addressLocality":"Merlo","addressRegion":"Buenos Aires","addressCountry":"AR"}}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap">
 <style>
 /* Layout: sticky logo bar, two-column card grid; each card has a gallery, price, conditions and one WhatsApp action. Palette taken from the logo: navy, sky, graphite. */
@@ -64,6 +76,41 @@ footer a{color:var(--navy)}
 .hermana img{height:44px;width:auto;background:#fff;border-radius:10px;padding:4px 8px;display:block}
 .num{font-variant-numeric:tabular-nums;color:var(--fg);font-weight:600}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+picture{display:block}
+.media{position:relative}
+.shot{cursor:zoom-in}
+.badge{position:absolute;top:10px;left:10px;background:#b45309;color:#fff;font:700 .8rem var(--body);padding:4px 12px;border-radius:999px;letter-spacing:.03em;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.zoom{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;border:0;border-radius:999px;padding:6px 12px;font:600 .8rem var(--body);cursor:pointer}
+.specs{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--tint);color:var(--fg);border-radius:999px;padding:3px 10px;font-size:.85rem;font-weight:600}
+.yt{position:relative;display:block;width:100%;aspect-ratio:16/9;border:0;padding:0;border-radius:10px;overflow:hidden;cursor:pointer;background:#000}
+.yt img{width:100%;height:100%;object-fit:cover;display:block;opacity:.9}
+.yt .play{position:absolute;inset:0;margin:auto;width:56px;height:56px;border-radius:50%;background:rgba(220,38,38,.92);color:#fff;display:grid;place-items:center;font-size:1.3rem;padding-left:4px}
+.yt-frame{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;display:block}
+.map-frame{width:100%;height:240px;border:0;border-radius:10px;margin-top:8px;display:block}
+.maplink{display:inline-block;margin-top:6px;font-size:.9rem}
+.faq{margin-bottom:34px}
+.faq h3{font:700 1.3rem var(--display);margin:0 0 10px}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:8px}
+.faq details p{margin:8px 0 0;color:var(--muted)}
+.faq .ghost{margin-top:8px}
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:40;display:flex;align-items:center;gap:8px;background:var(--wa);color:var(--wa-fg);text-decoration:none;font:700 1rem var(--body);padding:14px 18px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.fab svg{width:24px;height:24px;flex:none}
+.fab:hover{filter:brightness(1.07)}
+body{padding-bottom:84px}
+@media (max-width:420px){.fab span{display:none}.fab{padding:15px}}
+.lb{border:0;padding:0;margin:0;width:100%;height:100%;max-width:none;max-height:none;background:rgba(0,0,0,.94);color:#fff}
+.lb::backdrop{background:rgba(0,0,0,.94)}
+.lb[open]{display:grid;grid-template-rows:auto 1fr auto}
+.lb-top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-weight:600}
+.lb-stage{position:relative;min-height:0;display:grid;place-items:center;touch-action:pan-y}
+.lb-stage picture,.lb-stage img{max-width:100%;max-height:100%}
+.lb-stage img{width:auto;height:auto;max-height:calc(100dvh - 120px);object-fit:contain;display:block;margin:0 auto}
+.lb button{background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:999px;width:46px;height:46px;font-size:1.3rem;cursor:pointer}
+.lb button:hover{background:rgba(255,255,255,.28)}
+.lb-prev,.lb-next{position:absolute;top:50%;transform:translateY(-50%)}
+.lb-prev{left:10px}.lb-next{right:10px}
+.lb-foot{text-align:center;padding:10px;color:#cfd8e3;font-size:.9rem}
 </style>
 </head><body>
 <div class="wrap">
@@ -84,6 +131,13 @@ footer a{color:var(--navy)}
   <section>
     <div class="zone"><h3>Merlo</h3><span>Centro, cerca de la estación de trenes</span></div>
     <div class="grid" id="grid"></div>
+    <noscript><p>Departamentos y casas en alquiler en Merlo: Rosas 757, Avellaneda 660, Chacabuco 400-500 y Mendoza 630 (chalet). Consultá por WhatsApp al <a href="https://wa.me/5491160151357">11 6015 1357</a>.</p></noscript>
+  </section>
+
+  <section class="faq" id="faq" hidden>
+    <h3>Preguntas frecuentes</h3>
+    <div id="faq-list"></div>
+    <a class="ghost" id="resenas" href="#" target="_blank" rel="noopener" hidden>★ Ver reseñas en Google</a>
   </section>
 
   <section class="cond" id="cond" hidden>
@@ -97,6 +151,21 @@ footer a{color:var(--navy)}
     <div class="hermana"><span>¿Buscás en Mar del Plata?</span><a href="https://www.mardelfrentealmar.com.ar" target="_blank" rel="noopener"><img src="img/mardelfrentealmar-logo.png" alt="Mardel Frente al Mar" width="130" height="44"></a></div>
   </footer>
 </div>
+
+<a class="fab" id="fab" href="https://wa.me/5491160151357" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 2a8 8 0 1 1-4.2 14.8l-.4-.2-2.6.7.7-2.5-.2-.4A8 8 0 0 1 12 4Zm-3 3.5c-.2 0-.5.1-.7.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3 2.4 1 2.9.8 3.4.7.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.7-.4l-1.8-.9c-.3-.1-.5-.1-.7.2l-.8 1c-.2.2-.3.2-.6.1-.9-.4-2-1-2.8-2.3-.2-.3 0-.4.2-.6l.5-.6c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.8-2c-.2-.5-.4-.5-.6-.5Z"/></svg>
+  <span>WhatsApp</span>
+</a>
+
+<dialog class="lb" id="lb" aria-label="Galería de fotos">
+  <div class="lb-top"><span id="lb-title"></span><button type="button" id="lb-x" aria-label="Cerrar">✕</button></div>
+  <div class="lb-stage" id="lb-stage">
+    <button type="button" class="lb-prev" id="lb-prev" aria-label="Foto anterior">‹</button>
+    <div id="lb-media"></div>
+    <button type="button" class="lb-next" id="lb-next" aria-label="Foto siguiente">›</button>
+  </div>
+  <div class="lb-foot" id="lb-n"></div>
+</dialog>
 
 <script src="config.js"></script>
 <script>
@@ -115,36 +184,85 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){retur
 function waLink(t){return 'https://wa.me/'+WA+'?text='+encodeURIComponent('Hola, quiero consultar por el alquiler de '+t)}
 function fmtNum(n){var d=n.replace(/\D/g,'');if(d.length===13&&d.slice(0,3)==='549')d=d.slice(3);return d.length===10?d.slice(0,2)+' '+d.slice(2,6)+' '+d.slice(6):n}
 
+function pic(u,cls,alt,lazy){
+  var img='<img'+(cls?' class="'+cls+'"':'')+' src="'+esc(u)+'" alt="'+esc(alt||'')+'"'+(lazy?' loading="lazy"':'')+' decoding="async">';
+  if(/^img\/.+\.jpg$/.test(u))return '<picture><source type="image/webp" srcset="'+esc(u.replace(/\.jpg$/,'.webp'))+'">'+img+'</picture>';
+  return img;
+}
+function ytId(u){var m=String(u||'').match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([\w-]{11})/);return m?m[1]:null}
+function fechaAR(d){var m=String(d||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+'/'+m[2]+'/'+m[1]:''}
+function mapQuery(p){return (p.mapa&&p.mapa.trim())||(p.titulo+', Merlo, Buenos Aires, Argentina')}
+
+// ----- visor de fotos a pantalla completa -----
+var LB={f:[],i:0,t:''};
+function lbShow(){var u=LB.f[LB.i];document.getElementById('lb-media').innerHTML=pic(u,'',LB.t+' - foto '+(LB.i+1),false);document.getElementById('lb-n').textContent=(LB.i+1)+' / '+LB.f.length;document.getElementById('lb-prev').hidden=document.getElementById('lb-next').hidden=LB.f.length<2}
+function lbOpen(f,i,t){LB={f:f,i:i,t:t};document.getElementById('lb-title').textContent=t;lbShow();var d=document.getElementById('lb');if(d.showModal)d.showModal();else d.setAttribute('open','')}
+function lbGo(n){LB.i=(LB.i+n+LB.f.length)%LB.f.length;lbShow()}
+(function(){
+  var d=document.getElementById('lb'),st=document.getElementById('lb-stage'),x0=null;
+  document.getElementById('lb-x').onclick=function(){d.close()};
+  document.getElementById('lb-prev').onclick=function(){lbGo(-1)};
+  document.getElementById('lb-next').onclick=function(){lbGo(1)};
+  d.addEventListener('click',function(e){if(e.target===d||e.target===st)d.close()});
+  d.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')lbGo(-1);if(e.key==='ArrowRight')lbGo(1)});
+  st.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  st.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50&&LB.f.length>1)lbGo(dx<0?1:-1)});
+})();
+
+function renderFaq(cfg){
+  var box=document.getElementById('faq'),list=document.getElementById('faq-list'),any=false;list.innerHTML='';
+  (cfg.faq||'').split(/\n\s*\n/).forEach(function(b){
+    var l=b.trim().split('\n');var q=l.shift();var a=l.join('\n').trim();if(!q||!a)return;
+    var d=document.createElement('details');d.innerHTML='<summary>'+esc(q)+'</summary><p>'+esc(a)+'</p>';list.appendChild(d);any=true});
+  var r=document.getElementById('resenas');
+  if(/^https?:\/\//.test(cfg.resenas_url||'')){r.href=cfg.resenas_url;r.hidden=false;any=true}else r.hidden=true;
+  box.hidden=!any;
+}
+
 function render(data){
   var cfg=data.config||{};
   if(cfg.whatsapp){WA=cfg.whatsapp.replace(/\D/g,'');document.getElementById('cta-top').href='https://wa.me/'+WA;document.getElementById('num').textContent=fmtNum(WA)}
+  document.getElementById('fab').href='https://wa.me/'+WA+'?text='+encodeURIComponent('Hola, quiero consultar por un alquiler en Merlo');
   if(cfg.intro_titulo)document.getElementById('intro-titulo').textContent=cfg.intro_titulo;
   if(cfg.intro_texto)document.getElementById('intro-texto').textContent=cfg.intro_texto;
   if(cfg.condiciones&&cfg.condiciones.trim()){document.getElementById('cond-texto').textContent=cfg.condiciones;document.getElementById('cond').hidden=false}
+  renderFaq(cfg);
   var grid=document.getElementById('grid');grid.innerHTML='';
   var props=(data.props||[]).filter(function(p){return p.disponible!==false});
   if(!props.length){grid.innerHTML='<p class="empty">Por el momento no hay unidades disponibles. Escribinos por WhatsApp y te avisamos.</p>';return}
-  props.forEach(function(p){
+  props.forEach(function(p,n){
     var fotos=p.fotos&&p.fotos.length?p.fotos:['logo.png'];
     var card=document.createElement('article');card.className='card';
-    var th=fotos.map(function(u,k){return '<button type="button" aria-label="Foto '+(k+1)+'" '+(k===0?'aria-current="true"':'')+' data-u="'+esc(u)+'"><img src="'+esc(u)+'" alt="" loading="lazy"></button>'}).join('');
+    var th=fotos.map(function(u,k){return '<button type="button" aria-label="Foto '+(k+1)+'" '+(k===0?'aria-current="true"':'')+' data-k="'+k+'">'+pic(u,'',''  ,true)+'</button>'}).join('');
     var precio=p.precio&&p.precio.trim()?esc(p.precio):'Consultar';
-    var h='<img class="shot" src="'+esc(fotos[0])+'" alt="'+esc(p.titulo)+'">';
+    var fecha=p.precio&&p.precio.trim()&&p.precio_fecha?'Precio vigente al '+fechaAR(p.precio_fecha):'';
+    var h='<div class="media">'+pic(fotos[0],'shot',p.titulo,n>0);
+    if(p.estado==='reservado')h+='<span class="badge">Reservado</span>';
+    if(fotos.length>1||fotos[0]!=='logo.png')h+='<button type="button" class="zoom" aria-label="Ver fotos a pantalla completa">⤢ Ampliar</button>';
+    h+='</div>';
     if(fotos.length>1)h+='<div class="thumbs">'+th+'</div>';
-    h+='<div class="body"><span class="tag">'+esc(p.etiqueta||'Merlo')+(p.ambientes?' · '+esc(p.ambientes):'')+'</span><h4>'+esc(p.titulo)+'</h4><p>'+esc(p.descripcion)+'</p>';
-    h+='<div class="price">'+precio+(p.ajuste?'<small>'+esc(p.ajuste)+'</small>':'')+'</div>';
+    h+='<div class="body"><span class="tag">'+esc(p.etiqueta||'Merlo')+(p.ambientes?' · '+esc(p.ambientes):'')+'</span><h4>'+esc(p.titulo)+'</h4>';
+    if(p.superficie||p.expensas)h+='<div class="specs">'+(p.superficie?'<span class="chip">'+esc(p.superficie)+'</span>':'')+(p.expensas?'<span class="chip">Expensas: '+esc(p.expensas)+'</span>':'')+'</div>';
+    h+='<p>'+esc(p.descripcion)+'</p>';
+    h+='<div class="price">'+precio+((p.ajuste||fecha)?'<small>'+esc([p.ajuste,fecha].filter(Boolean).join(' · '))+'</small>':'')+'</div>';
+    var yid=ytId(p.youtube);
+    if(yid)h+='<button type="button" class="yt" data-id="'+yid+'" aria-label="Reproducir video de '+esc(p.titulo)+'"><img src="https://i.ytimg.com/vi/'+yid+'/hqdefault.jpg" alt="" loading="lazy"><span class="play">▶</span></button>';
     if(p.condiciones&&p.condiciones.trim())h+='<details><summary>Condiciones</summary><p>'+esc(p.condiciones)+'</p></details>';
+    h+='<details class="ub"><summary>Ubicación</summary><div class="ubc"></div></details>';
     h+='<div class="actions"><a class="cta" href="'+waLink(p.titulo)+'" target="_blank" rel="noopener">Consultar por WhatsApp</a>';
-    if(p.youtube)h+='<a class="ghost" href="'+esc(p.youtube)+'" target="_blank" rel="noopener">▶ Ver video</a>';
+    if(p.youtube&&!yid)h+='<a class="ghost" href="'+esc(p.youtube)+'" target="_blank" rel="noopener">▶ Ver video</a>';
     h+='</div></div>';
     card.innerHTML=h;
+    var cur=0;
+    function setCur(k){cur=k;card.querySelector('.media picture, .media > img').outerHTML=pic(fotos[k],'shot',p.titulo,false);card.querySelectorAll('.thumbs button').forEach(function(x,i){if(i===k)x.setAttribute('aria-current','true');else x.removeAttribute('aria-current')})}
     var thumbs=card.querySelector('.thumbs');
-    if(thumbs)thumbs.addEventListener('click',function(e){
-      var b=e.target.closest('button');if(!b)return;
-      card.querySelector('.shot').src=b.getAttribute('data-u');
-      card.querySelectorAll('.thumbs button').forEach(function(x){x.removeAttribute('aria-current')});
-      b.setAttribute('aria-current','true');
-    });
+    if(thumbs)thumbs.addEventListener('click',function(e){var b=e.target.closest('button');if(b)setCur(+b.getAttribute('data-k'))});
+    card.querySelector('.media').addEventListener('click',function(e){if(e.target.closest('.shot')||e.target.closest('.zoom'))lbOpen(fotos,cur,p.titulo)});
+    var yt=card.querySelector('.yt');
+    if(yt)yt.addEventListener('click',function(){var f=document.createElement('iframe');f.className='yt-frame';f.src='https://www.youtube-nocookie.com/embed/'+yt.getAttribute('data-id')+'?autoplay=1&rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title='Video de '+p.titulo;yt.replaceWith(f)});
+    var ub=card.querySelector('.ub');
+    ub.addEventListener('toggle',function(){var c=ub.querySelector('.ubc');if(!ub.open||c.firstChild)return;var q=encodeURIComponent(mapQuery(p));
+      c.innerHTML='<iframe class="map-frame" loading="lazy" title="Mapa de '+esc(p.titulo)+'" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q='+q+'&output=embed"></iframe><a class="maplink" href="https://www.google.com/maps/search/?api=1&query='+q+'" target="_blank" rel="noopener">Abrir en Google Maps ↗</a>'});
     grid.appendChild(card);
   });
 }
