@@ -70,6 +70,7 @@ La web cuenta las visitas sin mostrarlas al público. Los números se ven solo e
 ### Cómo funciona la base
 - Tabla `public.visitas (dia date primary key, total integer)`: una fila por día, con el día en hora de Argentina.
 - Seguridad (RLS) activada: el público **no puede leer ni escribir** la tabla; solo un usuario logueado (el panel) puede leerla.
+- Permisos: el panel puede leer porque se hizo `grant select on public.visitas to authenticated`. Sin ese GRANT, Supabase responde "permission denied" y la pestaña Estadísticas aparece vacía aunque haya visitas (ya incluido en `migracion-3-contador.sql`).
 - Función `registrar_visita()` (`security definer`, no devuelve nada): suma 1 al día de hoy. Es lo único que puede ejecutar un visitante anónimo, por eso no puede ver ni alterar los números.
 
 ### Estado
