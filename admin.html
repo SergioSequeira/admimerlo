@@ -95,6 +95,7 @@ code{background:var(--tint);padding:1px 5px;border-radius:4px}
       <div class="tabs">
         <button class="tab" id="tab-props" aria-pressed="true">Propiedades</button>
         <button class="tab" id="tab-config" aria-pressed="false">Textos generales</button>
+        <button class="tab" id="tab-stats" aria-pressed="false">Estadísticas</button>
       </div>
       <div id="side-props">
         <div class="list" id="list"></div>
@@ -163,6 +164,15 @@ code{background:var(--tint);padding:1px 5px;border-radius:4px}
         </form>
       </section>
 
+      <section id="stats-sec" class="card" hidden>
+        <h2>Visitas a la web</h2>
+        <div id="stats-kpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px"></div>
+        <div id="stats-bars" style="display:flex;align-items:flex-end;gap:3px;height:110px;margin-bottom:6px" aria-hidden="true"></div>
+        <p class="hint" style="color:var(--muted);margin:0 0 14px">Últimos 30 días. Cuenta una visita por sesión del navegador; la misma persona que vuelve otro día suma de nuevo, y algunos robots también pueden sumar.</p>
+        <table id="stats-tbl" style="width:100%;border-collapse:collapse;font-size:.95rem"></table>
+        <p id="stats-empty" class="hint" style="color:var(--muted)" hidden>Todavía no hay visitas registradas. Si ya pasó tiempo, revisá que se haya corrido <code>migracion-3-contador.sql</code> en Supabase.</p>
+      </section>
+
       <p id="pick" class="hint" style="color:var(--muted)">Elegí una propiedad de la lista o creá una nueva.</p>
     </main>
   </div>
@@ -194,9 +204,9 @@ $('logout').addEventListener('click',function(){sb.auth.signOut()});
 // ---------- tabs ----------
 $('tab-props').addEventListener('click',function(){tab('props')});
 $('tab-config').addEventListener('click',function(){tab('config');loadConfig()});
-function tab(w){var p=w==='props';$('tab-props').setAttribute('aria-pressed',p);$('tab-config').setAttribute('aria-pressed',!p);
-  $('side-props').hidden=!p;$('config-sec').hidden=p;$('editor').hidden=!(p&&cur);$('pick').hidden=!(p&&!cur)}
-
+$('tab-stats').addEventListener('click',function(){tab('stats');loadStats()});
+function tab(w){var p=w==='props';$('tab-props').setAttribute('aria-pressed',p);$('tab-config').setAttribute('aria-pressed',w==='config');$('tab-stats').setAttribute('aria-pressed',w==='stats');
+  $('side-props').hidden=!p;$('config-sec').hidden=w!=='config';$('stats-sec').hidden=w!=='stats';$('editor').hidden=!(p&&cur);$('pick').hidden=!(p&&!cur)}
 // ---------- propiedades ----------
 function loadProps(){
   sb.from('propiedades').select('*,fotos(id,url,orden)').order('orden').order('titulo').then(function(r){
@@ -281,6 +291,20 @@ $('file').addEventListener('change',function(){upload(this.files);this.value=''}
 var dz=$('drop');['dragenter','dragover'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('on')})});
 ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('on')})});
 dz.addEventListener('drop',function(e){upload(e.dataTransfer.files)});
+
+// ---------- estadísticas ----------
+function ymd(d){var a=new Date(d.toLocaleString('en-US',{timeZone:'America/Argentina/Buenos_Aires'}));return a.getFullYear()+'-'+String(a.getMonth()+1).padStart(2,'0')+'-'+String(a.getDate()).padStart(2,'0')}
+function loadStats(){sb.from('visitas').select('dia,total').order('dia',{ascending:false}).then(function(r){
+  if(r.error)return toast('No se pudieron leer las visitas: '+r.error.message,true);
+  var rows=r.data||[],map={},total=0;rows.forEach(function(x){map[x.dia]=x.total;total+=x.total});
+  $('stats-empty').hidden=rows.length>0;
+  var days=[],now=new Date();for(var i=0;i<30;i++){days.push(ymd(new Date(now.getTime()-i*864e5)))}
+  var sum=function(n){return days.slice(0,n).reduce(function(a,d){return a+(map[d]||0)},0)};
+  var kp=[['Total',total],['Hoy',sum(1)],['Últimos 7 días',sum(7)],['Últimos 30 días',sum(30)]];
+  $('stats-kpis').innerHTML=kp.map(function(k){return '<div style="border:1px solid var(--line);border-radius:12px;padding:10px 12px"><div style="font:800 1.6rem var(--display);color:var(--navy)">'+k[1].toLocaleString('es-AR')+'</div><div class="hint" style="color:var(--muted)">'+k[0]+'</div></div>'}).join('');
+  var max=Math.max(1,Math.max.apply(null,days.map(function(d){return map[d]||0})));
+  $('stats-bars').innerHTML=days.slice().reverse().map(function(d){var v=map[d]||0;return '<div title="'+d+': '+v+'" style="flex:1;background:var(--sky);border-radius:3px 3px 0 0;height:'+Math.max(2,Math.round(v/max*100))+'%;opacity:'+(v?1:.25)+'"></div>'}).join('');
+  $('stats-tbl').innerHTML='<tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)">Día</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid var(--line)">Visitas</th></tr>'+days.map(function(d){var p=d.split('-');return '<tr><td style="padding:6px 8px;border-bottom:1px solid var(--line)">'+p[2]+'/'+p[1]+'/'+p[0]+'</td><td style="padding:6px 8px;border-bottom:1px solid var(--line);text-align:right">'+(map[d]||0).toLocaleString('es-AR')+'</td></tr>'}).join('')})}
 
 // ---------- textos generales ----------
 var KEYS=['whatsapp','intro_titulo','intro_texto','condiciones','faq','resenas_url'];

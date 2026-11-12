@@ -152,7 +152,6 @@ body{padding-bottom:84px}
     <div>WhatsApp: <span class="num" id="num">11 6015 1357</span></div>
     <div>Teléfono: <a class="num" id="tel" href="tel:1150167802">11 5016 7802</a></div>
     <div>Administración Merlo · Merlo, Buenos Aires</div>
-    <div id="visitas" hidden>Visitas: <strong id="visitas-n"></strong></div>
     <div class="hermana"><span>¿Buscás en Mar del Plata?</span><a href="https://www.mardelfrentealmar.com.ar" target="_blank" rel="noopener"><img src="img/mardelfrentealmar-logo.png" alt="Mardel Frente al Mar" width="130" height="44"></a></div>
   </footer>
 </div>
@@ -303,21 +302,16 @@ function load(){
 }
 load();
 
-// Contador de visitas: suma 1 por sesión del navegador (recargar la página no vuelve a contar) y muestra el total.
+// Contador de visitas (invisible para el público; las estadísticas se ven solo en /admin).
+// Suma 1 por sesión del navegador: recargar la página no vuelve a contar.
 (function(){
   var c=window.ADMI||{};
   if(!c.url||!c.key)return;
-  var contar=true;
-  try{if(sessionStorage.getItem('admi_visita')){contar=false}else{sessionStorage.setItem('admi_visita','1')}}catch(e){}
+  try{if(sessionStorage.getItem('admi_visita'))return;sessionStorage.setItem('admi_visita','1')}catch(e){}
   fetch(c.url.replace(/\/$/,'')+'/rest/v1/rpc/registrar_visita',{
     method:'POST',
     headers:{apikey:c.key,Authorization:'Bearer '+c.key,'Content-Type':'application/json'},
-    body:JSON.stringify({contar:contar})
-  }).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(n){
-    n=Number(n);
-    if(!isFinite(n)||n<1)return;
-    document.getElementById('visitas-n').textContent=n.toLocaleString('es-AR');
-    document.getElementById('visitas').hidden=false;
+    body:'{}',keepalive:true
   }).catch(function(){});
 })();
 </script>

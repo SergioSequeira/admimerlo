@@ -14,25 +14,20 @@ drop policy if exists "admin lee visitas" on public.visitas;
 create policy "admin lee visitas" on public.visitas
   for select to authenticated using (true);
 
--- Función que usa la web: suma una visita (si contar = true) y devuelve el total acumulado.
-create or replace function public.registrar_visita(contar boolean default true)
-returns bigint
+-- Función que usa la web: suma una visita al día de hoy. No devuelve nada (el total solo se ve en el panel).
+drop function if exists public.registrar_visita(boolean);
+create or replace function public.registrar_visita()
+returns void
 language plpgsql
 security definer
 set search_path = public
 as $$
-declare
-  t bigint;
 begin
-  if contar then
-    insert into public.visitas (dia, total)
-    values ((now() at time zone 'America/Argentina/Buenos_Aires')::date, 1)
-    on conflict (dia) do update set total = public.visitas.total + 1;
-  end if;
-  select coalesce(sum(total), 0) into t from public.visitas;
-  return t;
+  insert into public.visitas (dia, total)
+  values ((now() at time zone 'America/Argentina/Buenos_Aires')::date, 1)
+  on conflict (dia) do update set total = public.visitas.total + 1;
 end;
 $$;
 
-revoke all on function public.registrar_visita(boolean) from public;
-grant execute on function public.registrar_visita(boolean) to anon, authenticated;
+revoke all on function public.registrar_visita() from public;
+grant execute on function public.registrar_visita() to anon, authenticated;
