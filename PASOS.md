@@ -55,3 +55,32 @@ Listo. El panel queda en **https://admimerlo.com.ar/admin**.
 ## Mejoras de la ficha (paso extra, una sola vez)
 
 Correr `migracion-2-mejoras.sql` en Supabase > SQL Editor. Habilita en el panel: superficie, expensas, estado (Reservado), ubicación para el mapa y "precio vigente al...", y carga las preguntas frecuentes iniciales (editables en Textos generales). Hasta que se corra, la web funciona igual sin esos datos.
+
+---
+
+## Contador de visitas y estadísticas (12/11/2026)
+
+La web cuenta las visitas sin mostrarlas al público. Los números se ven solo en el panel: **https://admimerlo.com.ar/admin → pestaña "Estadísticas"** (hay que estar logueado).
+
+### Qué hay en el repo
+- `index.html`: al cargar, llama una vez por sesión del navegador a la función `registrar_visita()` de Supabase. Recargar la página no vuelve a contar (se usa `sessionStorage`). Si Supabase no responde, no pasa nada y la web funciona igual.
+- `admin.html`: pestaña **Estadísticas** con total acumulado, hoy, últimos 7 días, últimos 30 días, gráfico de barras de 30 días y tabla día por día.
+- `migracion-3-contador.sql`: crea la tabla `visitas` y la función `registrar_visita()`. Se puede correr más de una vez sin romper nada.
+
+### Cómo funciona la base
+- Tabla `public.visitas (dia date primary key, total integer)`: una fila por día, con el día en hora de Argentina.
+- Seguridad (RLS) activada: el público **no puede leer ni escribir** la tabla; solo un usuario logueado (el panel) puede leerla.
+- Función `registrar_visita()` (`security definer`, no devuelve nada): suma 1 al día de hoy. Es lo único que puede ejecutar un visitante anónimo, por eso no puede ver ni alterar los números.
+
+### Estado
+- SQL corrido el 12/11/2026 en el proyecto Supabase `dtoccdasexzqifjskapu` (SQL Editor, consulta "Contador diario de visitas (Argentina)"). Verificado: función creada, 1 política, RLS activo, el anónimo puede ejecutar la función pero no leer la tabla.
+- Las estadísticas empiezan en 0 desde ese día (no hay historial anterior).
+
+### Límites a tener en cuenta
+- No cuenta personas únicas: quien vuelve otro día o desde otro navegador suma de nuevo.
+- Algunos robots y buscadores que ejecutan JavaScript también pueden sumar.
+- Si el proyecto de Supabase se pausa por 7 días sin uso, no se registran visitas hasta restaurarlo.
+
+### Cómo volver a instalarlo (si se recrea el proyecto de Supabase)
+1. Supabase → SQL Editor → New query → pegar `migracion-3-contador.sql` → Run (confirmar el aviso de "operaciones destructivas": son solo `drop ... if exists` del propio contador).
+2. Entrar a la web y después a `/admin` → Estadísticas: tiene que aparecer 1 visita hoy.
