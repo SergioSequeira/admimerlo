@@ -9,6 +9,9 @@ create table if not exists public.visitas (
 
 alter table public.visitas enable row level security;
 
+-- Permiso de lectura para el panel (usuario logueado). Sin este GRANT, Supabase devuelve "permission denied" aunque exista la política.
+grant select on public.visitas to authenticated;
+
 -- Nadie anónimo puede leer ni escribir la tabla directamente; solo el panel (usuario logueado) puede ver las estadísticas.
 drop policy if exists "admin lee visitas" on public.visitas;
 create policy "admin lee visitas" on public.visitas
