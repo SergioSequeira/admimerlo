@@ -105,7 +105,7 @@ where not exists (select 1 from public.fotos f where f.propiedad_id = p.id);
 
 insert into public.config (clave, valor) values
  ('whatsapp',     '5491160151357'),
- ('intro_titulo', 'Departamentos y casas para alquilar'),
+ ('intro_titulo', 'Departamentos y casas para alquilar en Merlo Centro'),
  ('intro_texto',  'Mirá las fotos y consultá disponibilidad y costos por WhatsApp. Te pasamos también videos de cada propiedad.'),
  ('condiciones',  '')
 on conflict (clave) do nothing;
