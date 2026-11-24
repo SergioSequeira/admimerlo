@@ -14,7 +14,7 @@
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="logo.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"RealEstateAgent","name":"Administración Merlo","url":"https://admimerlo.com.ar/","logo":"https://admimerlo.com.ar/logo.png","image":"https://admimerlo.com.ar/og.jpg","telephone":["+5491160151357","+541150167802"],"description":"Administración y alquiler de departamentos y casas en Merlo, Buenos Aires.","areaServed":{"@type":"City","name":"Merlo"},"address":{"@type":"PostalAddress","addressLocality":"Merlo","addressRegion":"Buenos Aires","addressCountry":"AR"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"12:00","closes":"16:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Saturday","opens":"10:00","closes":"12:00"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"RealEstateAgent","name":"Administración Merlo","url":"https://admimerlo.com.ar/","logo":"https://admimerlo.com.ar/logo.png","image":"https://admimerlo.com.ar/og.jpg","telephone":["+5491160151357","+541150167802"],"description":"Administración y alquiler de departamentos y casas en Merlo, Buenos Aires.","areaServed":{"@type":"City","name":"Merlo"},"address":{"@type":"PostalAddress","addressLocality":"Merlo","addressRegion":"Buenos Aires","addressCountry":"AR"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"09:00","closes":"16:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Saturday","opens":"10:00","closes":"12:00"}]}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap">
 <style>
 /* Layout: sticky logo bar, two-column card grid; each card has a gallery, price, conditions and one WhatsApp action. Palette taken from the logo: navy, sky, graphite. */
@@ -151,7 +151,7 @@ body{padding-bottom:84px}
   <footer>
     <div>WhatsApp: <span class="num" id="num">11 6015 1357</span></div>
     <div>Teléfono: <a class="num" id="tel" href="tel:1150167802">11 5016 7802</a></div>
-    <div>Atención: lunes a viernes de 12 a 16 h · sábados de 10 a 12 h</div>
+    <div>Atención: lunes a viernes de 9 a 16 h · sábados de 10 a 12 h</div>
     <div>Administración Merlo · Merlo, Buenos Aires</div>
     <div class="hermana"><span>¿Buscás en Mar del Plata?</span><a href="https://www.mardelfrentealmar.com.ar" target="_blank" rel="noopener"><img src="img/mardelfrentealmar-logo.png" alt="Mardel Frente al Mar" width="130" height="44"></a></div>
     <a class="ghost" style="justify-self:start;margin-top:8px" id="call-top" href="tel:1150167802">📞 Llamanos</a>
@@ -181,7 +181,7 @@ var FALLBACK={
   props:[
    {slug:'rosas',titulo:'Rosas 757',etiqueta:'Merlo centro',descripcion:'Edificio con balcones sobre la calle y entrada amplia con piso de porcelanato. Departamentos con cocina equipada y buena luz natural.',fotos:5},
    {slug:'avellaneda',titulo:'Avellaneda 600',etiqueta:'Merlo centro',descripcion:'Departamentos en un edificio con ingreso por pasillo y galería. Ambientes luminosos con ventilador de techo.',fotos:5},
-   {slug:'chacabuco',titulo:'Chacabuco 400-500',etiqueta:'Merlo centro',descripcion:'Complejo de ladrillo a la vista con jardín al frente. Departamentos con pisos de madera y porcelanato, y balcón.',fotos:5},
+   {slug:'chacabuco',titulo:'Chacabuco 400-500',precio:'485000',precio_fecha:'2026-11-24',ajuste:'Ajuste trimestral por IPC',etiqueta:'Merlo centro',descripcion:'Complejo de ladrillo a la vista con jardín al frente. Departamentos con pisos de madera y porcelanato, y balcón.',fotos:5},
    {slug:'mendoza',titulo:'Mendoza 630, chalet',etiqueta:'Casa en Merlo',descripcion:'Chalet de ladrillo con jardín, parrilla y galería. Cocina con mesada de granito y ambientes amplios con ventanas al verde.',fotos:5}
   ].map(function(p){p.fotos=[0,1,2,3,4].map(function(i){return 'img/'+p.slug+'-'+i+'.jpg'});p.disponible=true;return p})
 };

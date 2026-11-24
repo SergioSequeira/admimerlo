@@ -25,6 +25,6 @@ Se ve en el panel: https://admimerlo.com.ar/admin → Estadísticas → "Origen 
 ## Datos de la ficha de Google (para que coincidan con la web)
 - Nombre: Administración Merlo
 - Teléfonos: 11 6015 1357 (WhatsApp) y 11 5016 7802
-- Horario: lunes a viernes de 12 a 16 h; sábados de 10 a 12 h
+- Horario: lunes a viernes de 9 a 16 h; sábados de 10 a 12 h
 - Categoría sugerida: Inmobiliaria / Administración de propiedades
 - Sitio web: el link de arriba con `utm_source=google_negocio`
