@@ -14,7 +14,7 @@
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="logo.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"RealEstateAgent","name":"Administración Merlo","url":"https://admimerlo.com.ar/","logo":"https://admimerlo.com.ar/logo.png","image":"https://admimerlo.com.ar/og.jpg","telephone":"+5491160151357","description":"Administración y alquiler de departamentos y casas en Merlo, Buenos Aires.","areaServed":{"@type":"City","name":"Merlo"},"address":{"@type":"PostalAddress","addressLocality":"Merlo","addressRegion":"Buenos Aires","addressCountry":"AR"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"RealEstateAgent","name":"Administración Merlo","url":"https://admimerlo.com.ar/","logo":"https://admimerlo.com.ar/logo.png","image":"https://admimerlo.com.ar/og.jpg","telephone":["+5491160151357","+541150167802"],"description":"Administración y alquiler de departamentos y casas en Merlo, Buenos Aires.","areaServed":{"@type":"City","name":"Merlo"},"address":{"@type":"PostalAddress","addressLocality":"Merlo","addressRegion":"Buenos Aires","addressCountry":"AR"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"12:00","closes":"16:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Saturday","opens":"10:00","closes":"12:00"}]}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap">
 <style>
 /* Layout: sticky logo bar, two-column card grid; each card has a gallery, price, conditions and one WhatsApp action. Palette taken from the logo: navy, sky, graphite. */
@@ -151,6 +151,7 @@ body{padding-bottom:84px}
   <footer>
     <div>WhatsApp: <span class="num" id="num">11 6015 1357</span></div>
     <div>Teléfono: <a class="num" id="tel" href="tel:1150167802">11 5016 7802</a></div>
+    <div>Atención: lunes a viernes de 12 a 16 h · sábados de 10 a 12 h</div>
     <div>Administración Merlo · Merlo, Buenos Aires</div>
     <div class="hermana"><span>¿Buscás en Mar del Plata?</span><a href="https://www.mardelfrentealmar.com.ar" target="_blank" rel="noopener"><img src="img/mardelfrentealmar-logo.png" alt="Mardel Frente al Mar" width="130" height="44"></a></div>
     <a class="ghost" style="justify-self:start;margin-top:8px" id="call-top" href="tel:1150167802">📞 Llamanos</a>
@@ -303,17 +304,47 @@ function load(){
 }
 load();
 
-// Contador de visitas (invisible para el público; las estadísticas se ven solo en /admin).
-// Suma 1 por sesión del navegador: recargar la página no vuelve a contar.
+// Contador de visitas y origen (invisible para el público; las estadísticas se ven solo en /admin).
+// Suma 1 por sesión del navegador. Guarda de dónde llegó la visita (utm_source o sitio de referencia) y los clics en WhatsApp / Llamar.
+// No cuenta: navegadores donde se abrió /admin o con ?interno=1 (tus propias visitas), ni robots conocidos.
 (function(){
   var c=window.ADMI||{};
   if(!c.url||!c.key)return;
-  try{if(sessionStorage.getItem('admi_visita'))return;sessionStorage.setItem('admi_visita','1')}catch(e){}
-  fetch(c.url.replace(/\/$/,'')+'/rest/v1/rpc/registrar_visita',{
-    method:'POST',
-    headers:{apikey:c.key,Authorization:'Bearer '+c.key,'Content-Type':'application/json'},
-    body:'{}',keepalive:true
-  }).catch(function(){});
+  try{
+    if(/[?&]interno=1(&|$)/.test(location.search))localStorage.setItem('admi_interno','1');
+    if(localStorage.getItem('admi_interno'))return;
+  }catch(e){}
+  if(navigator.webdriver||/bot|crawl|spider|slurp|headless|lighthouse|preview|facebookexternalhit/i.test(navigator.userAgent))return;
+  var base=c.url.replace(/\/$/,'')+'/rest/v1/rpc/';
+  var H={apikey:c.key,Authorization:'Bearer '+c.key,'Content-Type':'application/json'};
+  var OK=['directo','google','google_negocio','facebook','instagram','whatsapp','mercadolibre','zonaprop','argenprop','youtube','mardelfrentealmar','qr'];
+  var REF=[['google_negocio','business.google.'],['google','google.'],['facebook','facebook.'],['facebook','fb.'],['instagram','instagram.'],['whatsapp','whatsapp.'],['whatsapp','wa.me'],['mercadolibre','mercadolibre.'],['mercadolibre','mercadolivre.'],['zonaprop','zonaprop.'],['argenprop','argenprop.'],['youtube','youtube.'],['youtube','youtu.be'],['mardelfrentealmar','mardelfrentealmar.']];
+  function detectar(){
+    var u='';try{u=(new URLSearchParams(location.search).get('utm_source')||'').toLowerCase()}catch(e){}
+    if(u)return OK.indexOf(u)>-1?u:'otro';
+    var h='';try{h=new URL(document.referrer).hostname.toLowerCase()}catch(e){}
+    if(!h||h===location.hostname)return 'directo';
+    for(var i=0;i<REF.length;i++)if(h.indexOf(REF[i][1])>-1)return REF[i][0];
+    return 'otro';
+  }
+  var origen=null;try{origen=sessionStorage.getItem('admi_origen')}catch(e){}
+  if(!origen){origen=detectar();try{sessionStorage.setItem('admi_origen',origen)}catch(e){}}
+  function enviar(fn,body,sinParam){
+    return fetch(base+fn,{method:'POST',headers:H,body:JSON.stringify(body),keepalive:true}).then(function(r){
+      // Si la base todavía no tiene la función nueva, cuenta la visita como antes (sin origen).
+      if(!r.ok&&sinParam)return fetch(base+fn,{method:'POST',headers:H,body:'{}',keepalive:true});
+    }).catch(function(){});
+  }
+  var yaContada=false;try{yaContada=!!sessionStorage.getItem('admi_visita')}catch(e){}
+  if(!yaContada){try{sessionStorage.setItem('admi_visita','1')}catch(e){}enviar('registrar_visita',{p_origen:origen},true)}
+  // Clics de contacto: máximo uno de cada tipo por sesión, para no inflar.
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;
+    var h=a.getAttribute('href')||'',t=/^https:\/\/wa\.me\//.test(h)?'whatsapp':/^tel:/.test(h)?'llamar':'';
+    if(!t)return;
+    try{if(sessionStorage.getItem('admi_click_'+t))return;sessionStorage.setItem('admi_click_'+t,'1')}catch(x){}
+    enviar('registrar_click',{p_origen:origen,p_tipo:t},false);
+  },true);
 })();
 </script>
 </body></html>

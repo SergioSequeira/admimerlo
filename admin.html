@@ -170,6 +170,10 @@ code{background:var(--tint);padding:1px 5px;border-radius:4px}
         <div id="stats-bars" style="display:flex;align-items:flex-end;gap:3px;height:110px;margin-bottom:6px" aria-hidden="true"></div>
         <p class="hint" style="color:var(--muted);margin:0 0 14px">Últimos 30 días. Cuenta una visita por sesión del navegador; la misma persona que vuelve otro día suma de nuevo, y algunos robots también pueden sumar.</p>
         <table id="stats-tbl" style="width:100%;border-collapse:collapse;font-size:.95rem"></table>
+        <h3 style="font:700 1.15rem var(--display);margin:22px 0 4px">Origen del tráfico (últimos 30 días)</h3>
+        <p class="hint" style="color:var(--muted);margin:0 0 10px">De dónde llegó cada visita y cuántas tocaron WhatsApp o Llamar. Los links con <code>?utm_source=...</code> (ver <code>LINKS-ORIGEN.md</code>) son los que distinguen cada canal; sin ellos, Instagram, Facebook y WhatsApp suelen figurar como "Directo". No cuenta tus propias visitas (este navegador queda excluido al abrir el panel).</p>
+        <table id="orig-tbl" style="width:100%;border-collapse:collapse;font-size:.95rem"></table>
+        <p id="orig-empty" class="hint" style="color:var(--muted)" hidden></p>
         <p id="stats-empty" class="hint" style="color:var(--muted)" hidden>Todavía no hay visitas registradas. Si ya pasó tiempo, revisá que se haya corrido <code>migracion-3-contador.sql</code> en Supabase.</p>
       </section>
 
@@ -292,9 +296,24 @@ var dz=$('drop');['dragenter','dragover'].forEach(function(ev){dz.addEventListen
 ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('on')})});
 dz.addEventListener('drop',function(e){upload(e.dataTransfer.files)});
 
+try{localStorage.setItem('admi_interno','1')}catch(e){}
 // ---------- estadísticas ----------
 function ymd(d){var a=new Date(d.toLocaleString('en-US',{timeZone:'America/Argentina/Buenos_Aires'}));return a.getFullYear()+'-'+String(a.getMonth()+1).padStart(2,'0')+'-'+String(a.getDate()).padStart(2,'0')}
-function loadStats(){sb.from('visitas').select('dia,total').order('dia',{ascending:false}).then(function(r){
+// ---------- origen del tráfico ----------
+var ORIG_NOM={directo:'Directo / sin dato',google:'Google (buscador)',google_negocio:'Google (ficha del negocio)',facebook:'Facebook',instagram:'Instagram',whatsapp:'WhatsApp',mercadolibre:'Mercado Libre',zonaprop:'Zonaprop',argenprop:'Argenprop',youtube:'YouTube',mardelfrentealmar:'Mardel Frente al Mar (web)',qr:'Código QR',otro:'Otro sitio'};
+function loadOrigen(){
+  var since=ymd(new Date(Date.now()-29*864e5));
+  sb.from('visitas_origen').select('dia,origen,tipo,total').gte('dia',since).then(function(r){
+    var t=$('orig-tbl'),e=$('orig-empty');
+    if(r.error){t.innerHTML='';e.hidden=false;e.textContent='Todavía no se puede leer el origen: falta correr migracion-4-origen.sql en Supabase ('+r.error.message+').';return}
+    var m={};(r.data||[]).forEach(function(x){var o=m[x.origen]||(m[x.origen]={visita:0,whatsapp:0,llamar:0});o[x.tipo]+=x.total});
+    var keys=Object.keys(m).sort(function(a,b){return m[b].visita-m[a].visita});
+    e.hidden=keys.length>0;if(!keys.length)e.textContent='Todavía no hay datos de origen. Se empiezan a juntar desde que se publicó esta versión.';
+    var th='padding:6px 8px;border-bottom:1px solid var(--line)';
+    t.innerHTML=keys.length?'<tr><th style="text-align:left;'+th+'">Origen</th><th style="text-align:right;'+th+'">Visitas</th><th style="text-align:right;'+th+'">WhatsApp</th><th style="text-align:right;'+th+'">Llamar</th><th style="text-align:right;'+th+'">Contactos / visita</th></tr>'+keys.map(function(k){var o=m[k],c=o.whatsapp+o.llamar;return '<tr><td style="'+th+'">'+(ORIG_NOM[k]||k)+'</td><td style="text-align:right;'+th+'">'+o.visita+'</td><td style="text-align:right;'+th+'">'+o.whatsapp+'</td><td style="text-align:right;'+th+'">'+o.llamar+'</td><td style="text-align:right;'+th+'">'+(o.visita?Math.round(c/o.visita*100)+'%':'-')+'</td></tr>'}).join(''):'';
+  });
+}
+function loadStats(){loadOrigen();sb.from('visitas').select('dia,total').order('dia',{ascending:false}).then(function(r){
   if(r.error)return toast('No se pudieron leer las visitas: '+r.error.message,true);
   var rows=r.data||[],map={},total=0;rows.forEach(function(x){map[x.dia]=x.total;total+=x.total});
   $('stats-empty').hidden=rows.length>0;
