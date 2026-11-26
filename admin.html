@@ -192,16 +192,19 @@ var $=function(id){return document.getElementById(id)};
 function toast(m,err){var t=$('toast');t.textContent=m;t.className='toast show'+(err?' err':'');clearTimeout(t._h);t._h=setTimeout(function(){t.className='toast'},err?5000:2200)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 if(!C.url||!C.key){$('noconfig').hidden=false;return}
-var sb=window.supabase.createClient(C.url,C.key);
+// El token de la sesión se envía siempre en Authorization (sin él Supabase trata la petición como visitante anónimo y responde "permission denied")
+var TOKEN=null;
+var sb=window.supabase.createClient(C.url,C.key,{global:{fetch:function(u,o){o=o||{};if(TOKEN){var h=new Headers(o.headers||{});h.set('Authorization','Bearer '+TOKEN);o=Object.assign({},o,{headers:h})}return fetch(u,o)}}});
 var props=[],cur=null,fotos=[],EXTRA=false;
 var BASE=['titulo','etiqueta','ambientes','youtube','descripcion','precio','ajuste','condiciones'],XF=['superficie','expensas','mapa'];
 
 // ---------- sesión ----------
-sb.auth.getSession().then(function(r){show(!!(r.data&&r.data.session))});
-sb.auth.onAuthStateChange(function(_e,s){show(!!s)});
+sb.auth.getSession().then(function(r){TOKEN=(r.data&&r.data.session)?r.data.session.access_token:null;show(!!(r.data&&r.data.session))});
+sb.auth.onAuthStateChange(function(_e,s){TOKEN=s?s.access_token:null;show(!!s)});
 function show(logged){$('login').hidden=logged;$('app').hidden=!logged;$('logout').hidden=!logged;if(logged)loadProps()}
 $('login').addEventListener('submit',function(e){e.preventDefault();$('login-err').textContent='';
   sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('pass').value}).then(function(r){
+    if(r.data&&r.data.session)TOKEN=r.data.session.access_token;
     if(r.error)$('login-err').textContent='No se pudo ingresar: '+(r.error.message==='Invalid login credentials'?'email o contraseña incorrectos':r.error.message)})});
 $('logout').addEventListener('click',function(){sb.auth.signOut()});
 
